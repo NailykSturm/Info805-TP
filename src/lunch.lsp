@@ -4,5 +4,5 @@
 ;(load "Moteur/moteur.lsp")
 (load "src/UI/ui.lsp")
 
-(in-package :ui)
-(main)
+(ui:testUI)
+(ui:main)
