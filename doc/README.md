@@ -18,3 +18,6 @@ TP d'info 805 - Réalisation d'un systeme expert en lisp
     + Rechercher les zones d'apparition d'un pokémon 
         ``` pokémon => zone[] ```
         ``` zone => boolean ```
+
+## Schémas de la base de fait
+cf : Miro => https://miro.com/app/board/uXjVPphY1Nw=/
