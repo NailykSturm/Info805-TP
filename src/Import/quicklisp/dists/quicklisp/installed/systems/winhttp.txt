@@ -1,0 +1,1 @@
+dists/quicklisp/software/winhttp-20200610-git/winhttp.asd
