@@ -29,7 +29,10 @@
             (format t "- ") (pCol 3) (pRGBFore 150 0 200) (format t "find ") (pRes) (prgbfore 150 0 200) (format t ": permet de rechercher quelque chose") (pres) (newLine)
         )
         (
-            (notImplementedFunction (concat 'string "help <" command ">"))
+            (cond 
+                ((string= command "find") (notimplementedFunction command))
+                (t (prgbfore 210 10 10) (format t "Commande inconnue ") (pRes) (prgbfore 110 50 50) (format t "vérifier l'orthographe ou utiliser la commande help")  (pres) (newLine))
+            )
         )
     )
 )
@@ -38,7 +41,12 @@
 (defun checkInput (in)
     (cond 
         ((null in) t)
-        ((string= in "help") (help))
+        ((search "help" in) 
+            (cond 
+                ((equal (length in) 4) (help))
+                (t (help (subseq in 5)))
+            )
+        )
         ((string= in "exit") t)
         ((string= in "find") (notImplemented "find"))
         (t (pcol 1) (pcol 4) (prgbfore 110 50 50) (format t "Commande inconnue") (pRes) (pcol 1) (prgbfore 110 50 50) (format t "vérifier l'orthographe ou utiliser la commande help")  (pres) (newLine))
@@ -62,10 +70,16 @@
 (defun testUI ()
     (help)
     ; (format t "test") (newline) (newline) (format t "retest") (newline)
-    (format t "Quel est votre nom ?~%")
-    (let ((name (read-line)))
-        (prgbfore 175 0 175) (pcol 4) (pcomplex 58 25 175 25)  (format t "Bonjour ~a malheureusement, vous êtes sur la partie de test. Cette discussion va s'arrêter là!" name) (pres) (newline)
+    
+    (let ((string "help find")
+        (substring "findz"))
+        (format t "~a" (search substring string))
     )
+    (app)
+    ; (format t "Quel est votre nom ?~%")
+    ; (let ((name (read-line)))
+    ;     (prgbfore 175 0 175) (pcol 4) (pcomplex 58 25 175 25)  (format t "Bonjour ~a malheureusement, vous êtes sur la partie de test. Cette discussion va s'arrêter là!" name) (pres) (newline)
+    ; )
 )
 
 (defun main ()
