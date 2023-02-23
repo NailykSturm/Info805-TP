@@ -1,6 +1,16 @@
 (defpackage #:faits
     (:use #:cl)
-    (:export #:faits #:test #:*facts* #:*predicats* #:get-predicat #:typePokemon-weakness #:predicat-value #:getJson #:get-pokemon-list-of-type-url #:init-pokemon)
+    (:export 
+    #:faits 
+    #:test 
+    #:*facts* #:add-fact
+    #:*types* #:find-type-of-pokemon
+    #:*predicats* #:get-predicat #:add-predicat 
+    #:predicat #:make-predicat #:predicat-value 
+    #:pokemon #:make-pokemon 
+    #:typePokemon-weakness #:typePokemon-resistance #:typePokemon-immunity 
+    #:getJson #:get-pokemon-list-of-type-url #:get-API-pokemon
+    #:init-pokemon #:init-type)
 )
 
 (in-package #:faits)
@@ -56,6 +66,10 @@
   (requete-API (concatenate 'string API-url (write-to-string idType)))
 )
 
+(defun get-API-pokemon (namePokemon)
+  (requete-API (concatenate 'string "https://pokeapi.co/api/v2/pokemon/" namePokemon))
+)
+
 ; Parcourir le json
 (defun getJson (json key)
   (cdr (assoc key json))
@@ -86,12 +100,12 @@
   (getJson (getJson json :damage--relations) :double--damage--from)
 )
 
-(defun get-type-damage-relation-half-damage-from (json)
-  (getJson (getJson json :damage--relations) :half--damage--from)
+(defun get-type-damage-relation-half-damage-to (json)
+  (getJson (getJson json :damage--relations) :half--damage--to)
 )
 
-(defun get-type-damage-relation-no-damage-from (json)
-  (getJson (getJson json :damage--relations) :no--damage--from)
+(defun get-type-damage-relation-no-damage-to (json)
+  (getJson (getJson json :damage--relations) :no--damage--to)
 )
 
 (defun get-pokemon-list-of-type-url (url)
@@ -102,13 +116,14 @@
   (cond 
     ((null liste) nil)
     (t (progn 
-      (print ".")
+      (format T ".")
+      (finish-output)
       (let ((currenttype (get-API-type (typePokemon-id (car liste)))))
         (setf (typePokemon-frenchName (car liste)) (find-type-name-fr (get-type-names currentType)))
         (setf (typePokemon-englishName (car liste)) (find-type-name-en (get-type-names currentType)))
         (setf (typePokemon-weakness (car liste)) (get-type-damage-relation-double-damage-from currentType))
-        (setf (typePokemon-resistance (car liste)) (get-type-damage-relation-half-damage-from currentType))
-        (setf (typePokemon-immunity (car liste)) (get-type-damage-relation-no-damage-from currentType))
+        (setf (typePokemon-resistance (car liste)) (get-type-damage-relation-half-damage-to currentType))
+        (setf (typePokemon-immunity (car liste)) (get-type-damage-relation-no-damage-to currentType))
       )
       (init-type (cdr liste))
       )
@@ -116,8 +131,23 @@
   )
 )
 
-(print "Initialisation des types de pokemons")
-(init-type *types*)
+(defvar res nil)
+
+(defun find-type-of-pokemon (json-types liste)
+  (setq res nil)
+  (dolist (type json-types)
+    (dolist (typeLocal liste)
+      (if (equal (string-downcase (typePokemon-englishName typeLocal)) (getJson (getJson type :type) :name))
+        (progn
+          ; (format T "Trouvé !~%")
+          (push typeLocal res)
+        )
+        ; (format T "~a != ~a~%"(typePokemon-englishName typeLocal) (getJson (getJson type :type) :name))
+      )
+    )
+  )
+  (return-from find-type-of-pokemon res)
+)
 
 ; (print  *types*)
 ; (print (getJson (get-API-type (typePokemon-id (car *types*))) :damage--relations ))
@@ -156,17 +186,24 @@
     ((null liste) nil)
     (t 
       (progn 
-        (print ".")
+        ; (format nil ".")
         (let ((currentPokemon (requete-API(getJson (getJson (car liste) :pokemon) :url))))
           ; (print currentPokemon)
-          (add-fact
-            (make-pokemon
+          (let ((tempPoke (make-pokemon
               :name (getJson currentPokemon :name)
               :typesPoke (getJson currentPokemon :types)
               :stats (getJson currentPokemon :stats)
               :level nil
+            )))
+            (if (membrep tempPoke *facts*)
+              (format T "Pokemon déjà présent dans la base de faits~%")
+              (progn
+                (add-fact tempPoke)
+                (format T "Pokemon ajouté à la base de faits~%")
+              )
             )
           )
+          
           (init-pokemon (cdr liste))
         )
       )
@@ -182,17 +219,18 @@
   name
   value)
 
-(defvar predicat1 (make-predicat :name "typePokemon" :value electric))
-(defvar predicat2 (make-predicat :name "typeRecherche" :value "Attaque"))
+; (defvar predicat1 (make-predicat :name "typePokemon" :value electric))
+; (defvar predicat2 (make-predicat :name "typeRecherche" :value "Defense"))
 
 ; Liste des predicats
 (defparameter *predicats*
-  (list predicat1 predicat2)
+  nil
 )
 
 (defun add-predicat (predicat)
   (push predicat *predicats*)
 )
+(add-predicat (make-predicat :name "nomPokemon" :value "pidgey"))
 
 (defun get-predicat (predicatName liste)
   (cond 

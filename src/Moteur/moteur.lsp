@@ -22,6 +22,8 @@
                 )
             ) 
         )
+        (print "Parcours des regles termine")
+        (finish-output)
         (if (not (eq (regles:rule-name prochaineRegle) "prochaine-regle"))
             (funcall (regles:rule-actions prochaineRegle) faits:*predicats* faits:*facts*)
             (format t "Aucune regle ne peut etre appliquee~%")
