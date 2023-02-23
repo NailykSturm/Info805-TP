@@ -181,6 +181,14 @@
   (push pokemon *facts*)
 )
 
+(defun estDans (s1 s2)
+  (cond 
+    ((null s2) nil)
+    ((equal (pokemon-name s1) (pokemon-name (car s2))) t)
+    ( t (estDans s1 (cdr s2)))
+  )
+)
+
 (defun init-pokemon (liste)
   (cond 
     ((null liste) nil)
@@ -195,7 +203,7 @@
               :stats (getJson currentPokemon :stats)
               :level nil
             )))
-            (if (membrep tempPoke *facts*)
+            (if (estDans tempPoke *facts*)
               (format T "Pokemon déjà présent dans la base de faits~%")
               (progn
                 (add-fact tempPoke)

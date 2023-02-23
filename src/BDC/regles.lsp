@@ -42,7 +42,7 @@
 (defvar pokemon-of-opposite-type 
     (make-rule 
         :name 'pokemon-of-opposite-type 
-        :weight 1 
+        :weight 2 
         :conditions (lambda (predicats faits)
             (if (faits:get-predicat "typePokemon" predicats)
                 (if (faits:get-predicat "typeRecherche" predicats)
@@ -56,15 +56,16 @@
             )
         ) 
         :actions (lambda (predicats faits)
+            (print "Pokemon of opposite type : Start")
             (if (equal (faits:predicat-value (faits:get-predicat "typeRecherche" predicats)) "Attaque")
                 (progn
-                    (print "Pokemon of opposite type : Attaque")
-                    (dolist (weak-type (faits:typePokemon-weakness (faits:predicat-value (faits:get-predicat "typePokemon" predicats))))
+                    (format t "Pokemon of opposite type : Attaque~%")
+                    (dolist (weak-type (faits:typePokemon-weakness (car (faits:predicat-value (faits:get-predicat "typePokemon" predicats)))))
                         (faits:init-pokemon (faits:get-pokemon-list-of-type-url (faits:getJson weak-type :url)))
                     )
                 )
                 (progn
-                    (print "Pokemon of opposite type : Defense")
+                    (format t "Pokemon of opposite type : Defense~%")
                     (dolist (resis-type (faits:typePokemon-resistance (faits:predicat-value (faits:get-predicat "typePokemon" predicats))))
                         (faits:init-pokemon (faits:get-pokemon-list-of-type-url (faits:getJson resis-type :url)))
                     )
@@ -79,8 +80,8 @@
 
 (defvar find-pokemon-name
     (make-rule 
-        :name 'pokemon-of-opposite-type 
-        :weight 2 
+        :name 'find-pokemon-name
+        :weight 1 
         :conditions (lambda (predicats faits)
             (if (faits:get-predicat "nomPokemon" predicats)
                 (progn 
