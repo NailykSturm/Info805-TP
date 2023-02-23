@@ -17,6 +17,7 @@
 (defun pComplex (code r g b) (format t "~c[~a;2;~a;~a;~am" #\ESC code r g b))
 (defun notImplemented (command) (pcol 5) (prgbfore 110 50 50) (format t "TODO : command > ") (pRes) (prgbfore 110 50 50) (format t "~a" command) (format t " not implemented yet > ") (pres) (newLine))
 (defun notImplementedFunction (function) (pcol 5) (prgbfore 110 50 50) (format t "TODO : function > ") (pRes) (prgbfore 110 50 50) (format t "~a" function) (format t " not implemented yet") (pres) (newLine))
+(defun unknownCommand (command) (pcol 1) (pcol 4) (prgbfore 110 50 50) (format t "Commande ~a inconnue " command) (pRes) (pcol 1) (prgbfore 110 50 50) (format t "vérifier l'orthographe ou utiliser la commande help") (pres) (newLine))
 
 ;; Affiche l'aide de l'application
 (defun help (&optional command)
@@ -30,8 +31,11 @@
         )
         (
             (cond 
-                ((string= command "find") (notimplementedFunction command))
-                (t (prgbfore 210 10 10) (format t "Commande inconnue ") (pRes) (prgbfore 110 50 50) (format t "vérifier l'orthographe ou utiliser la commande help")  (pres) (newLine))
+                ((string= command "find") 
+                    (pCol 1) (pCol 4) (pRGBFore 150 0 200) (format t "Voici la liste des instructions disponibles :") (pRes) (newLine)
+                    (format t "- ") (pCol 3) (pRGBFore 150 0 200) (format t "find pokemon ") (pRes) (prgbfore 150 0 200) (format t ": permet de rechercher un pokemon") (pres) (newLine)
+                )
+                (t (unknownCommand command))
             )
         )
     )
@@ -48,8 +52,8 @@
             )
         )
         ((string= in "exit") t)
-        ((string= in "find") (notImplemented "find"))
-        (t (pcol 1) (pcol 4) (prgbfore 110 50 50) (format t "Commande inconnue") (pRes) (pcol 1) (prgbfore 110 50 50) (format t "vérifier l'orthographe ou utiliser la commande help")  (pres) (newLine))
+        ((string= in "find") (findSmth))
+        (t (unknownCommand in))
     )
 )
 
@@ -64,18 +68,24 @@
         )
     )
 )
+
+(defun findSmth ()
+    (pcol 4) (format t "Que voulez-vous rechercher ?") (pres) (newline)
+    (let ((src (read-line)))
+        (cond 
+            ((string= src "pokemon") (notImplementedFunction "find pokemon"))
+            (t (unknownCommand src))
+        )
+    )
+)
+
 (defun afficherPokemon (pokemon) (notImplementedFunction "afficherPokemon"))
 
 ;; Fonction de test pour tous types d'essais pour l'interface utilisateur
 (defun testUI ()
     (help)
     ; (format t "test") (newline) (newline) (format t "retest") (newline)
-    
-    (let ((string "help find")
-        (substring "findz"))
-        (format t "~a" (search substring string))
-    )
-    (app)
+    ; (app)
     ; (format t "Quel est votre nom ?~%")
     ; (let ((name (read-line)))
     ;     (prgbfore 175 0 175) (pcol 4) (pcomplex 58 25 175 25)  (format t "Bonjour ~a malheureusement, vous êtes sur la partie de test. Cette discussion va s'arrêter là!" name) (pres) (newline)
