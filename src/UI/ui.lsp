@@ -1,28 +1,71 @@
 (load "src/Moteur/moteur.lsp")
 (defpackage #:ui
   (:use #:cl #:moteur)
-  (:export #:main #:testUI)
+  (:export #:main #:testUI #:afficherPokemon)
 )
-
 (in-package #:ui)
 
-(defun printColorReset (txt) (format nil "~a~c[0m" txt #\ESC))
-(defun printColorRGBBack (r g b txt) (format nil "~c[48;2;~a;~a;~am~a" #\ESC r g b txt))
-(defun printColorRGBFore (r g b txt) (format nil "~c[38;2;~a;~a;~am~a" #\ESC r g b txt))
+;; Diverses fonctions mour mettre de la couleur, et gérer les caractères, dans le terminal
+(defun newLine () (format t "~%"))
+(defun pRes () (format t "~c[0m" #\ESC))
+(defun pCol (code) (format t "~c[~am" #\ESC code))
+(defun pRGBFore (r g b) (format t "~c[38;2;~a;~a;~am" #\ESC r g b ))
+(defun pRGBBack (r g b) (format t "~c[48;2;~a;~a;~am" #\ESC r g b))
+(defun pComplex (code r g b) (format t "~c[~a;2;~a;~a;~am" #\ESC code r g b))
+(defun notImplemented (command) (pcol 5) (prgbfore 110 50 50) (format t "TODO : not implemented yet > ") (pRes) (prgbfore 110 50 50) (format t "~a" command) (pres) (newLine))
 
-(defparameter *color* (list ))
+;; Affiche l'aide de l'application
+(defun help (&optional command)
+    (cond 
+        ((null command)
+            (pCol 1) (pCol 4) (pRGBFore 150 0 200) (format t "Voici la liste des instructions disponibles :") (pRes) (newLine)
+            (format t "- ") (pCol 3) (pRGBFore 150 0 200) (format t "help ") (pRes) (prgbfore 150 0 200) (format t ": affiche cette liste") (pRes) (newLine)
+            (format t "- ") (pCol 3) (pRGBFore 150 0 200) (format t "help <command> ") (pRes) (prgbfore 150 0 200) (format t ": obtiens de l'aide sur la commande") (pRes) (newLine)
+            (format t "- ") (pCol 3) (pRGBFore 150 0 200) (format t "exit ") (pRes) (prgbfore 150 0 200) (format t ": quitte l'application") (pres) (newLine)
+            (format t "- ") (pCol 3) (pRGBFore 150 0 200) (format t "find ") (pRes) (prgbfore 150 0 200) (format t ": permet de rechercher quelque chose") (pres) (newLine)
+        )
+        (
+            (notImplemented (concat 'string "help " command))
+        )
+    )
+)
 
+;; Verifie si la commande entrée est bien une qu'on connait
+(defun checkInput (in)
+    (cond 
+        ((null in) t)
+        ((string= in "help") (help))
+        ((string= in "exit") t)
+        ((string= in "find") (notImplemented "find"))
+        (t (pcol 1) (pcol 4) (prgbfore 110 50 50) (format t "Commande inconnue") (pRes) (pcol 1) (prgbfore 110 50 50) (format t "vérifier l'orthographe ou utiliser la commande help")  (pres) (newLine))
+    )
+)
+
+;; Fonction principale de l'application
+(defun app ()
+    (newline) (pcol 4) (format t "Que voulez-vous faire ?") (pres) (newline)
+    (let ((in (read-line)))
+        (let ((continue (checkInput in)))
+            (cond ((null continue) (app))
+                (t (pcol 1) (format t "Au revoir !") (pres) (newline))
+            )
+        )
+    )
+)
+(defun afficherPokemon (pokemon) (notImplemented "afficherPokemon"))
+
+;; Fonction de test pour tous types d'essais pour l'interface utilisateur
 (defun testUI ()
-  (print (format nil "~c[5mtestststs~c[0m" #\ESC #\ESC))
-  (format t "test from ui~%")
-  (format t "~c[38;2;255;157;5mcolor~c[0m~%" #\ESC #\ESC)
-  ; (print (format nil "~c[5mYOYOYLYOYLOYLOLOLOLOOLO" (color-codeANSI reset) #\ESC #\ESC))
-  ; (printcolor red "red")
-  (print (printColorReset (printColorRGBBack 255 157 5 (printColorRGBFore 0 0 0 "test"))))
+    (help)
+    ; (format t "test") (newline) (newline) (format t "retest") (newline)
+    (format t "Quel est votre nom ?~%")
+    (let ((name (read-line)))
+        (prgbfore 175 0 175) (pcol 4) (pcomplex 58 25 175 25)  (format t "Bonjour ~a malheureusement, vous êtes sur la partie de test. Cette discussion va s'arrêter là!" name) (pres) (newline)
+    )
 )
 
 (defun main ()
-  (format t "~%Ui Start !~%")
+    (format t "~%Ui Start !~%")
     (format t "~%Initialisation des types de pokemons~%")
     (faits:init-type faits:*types*)
     (format t "~%Lancement du moteur~%")
@@ -34,4 +77,6 @@
     (print (length faits:*predicats*))
     (moteur:moteurRun)
     (print (length faits:*facts*))
+    (help)
+    (app)
 )
