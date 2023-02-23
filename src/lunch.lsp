@@ -14,8 +14,8 @@
 
 
 ; Main
-; (ui:testUI)
-(ui:main)
+(ui:testUI)
+; (ui:main)
 
 ; Test de la librairie dexador + cl-json
 ; (print
