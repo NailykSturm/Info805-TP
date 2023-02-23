@@ -8,9 +8,9 @@
 
 (defun testUI ()
   (format t "test from ui~%")
-  (moteur:test)
 )
 
 (defun main ()
-  (format t "Hello, world!~%")
+  (format t "Ui Start !~%")
+  ; (moteur:moteurRun)
 )

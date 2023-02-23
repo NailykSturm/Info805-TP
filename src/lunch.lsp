@@ -1,5 +1,5 @@
 ; Gestionnaire de librarie de Common Lisp pour importer les autres librairies depuis internet
-(require "quicklisp" "src\\Import\\quicklisp\\setup.lisp")
+(require "quicklisp" "src/Import/quicklisp/setup.lisp")
 
 ; Importation des librairies
 (quicklisp:quickload "dexador") ; Librairie pour faire des requêtes HTTP
@@ -14,7 +14,7 @@
 
 
 ; Main
-(ui:testUI)
+; (ui:testUI)
 (ui:main)
 
 ; Test de la librairie dexador + cl-json
