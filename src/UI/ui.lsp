@@ -1,7 +1,10 @@
 (load "src/Moteur/moteur.lsp")
 (defpackage #:ui
   (:use #:cl #:moteur)
-  (:export #:main #:testUI #:afficherPokemon)
+  (:export 
+    #:main #:testUI 
+    #:afficherPokemon #:notImplementedFunction
+  )
 )
 (in-package #:ui)
 
@@ -12,7 +15,8 @@
 (defun pRGBFore (r g b) (format t "~c[38;2;~a;~a;~am" #\ESC r g b ))
 (defun pRGBBack (r g b) (format t "~c[48;2;~a;~a;~am" #\ESC r g b))
 (defun pComplex (code r g b) (format t "~c[~a;2;~a;~a;~am" #\ESC code r g b))
-(defun notImplemented (command) (pcol 5) (prgbfore 110 50 50) (format t "TODO : not implemented yet > ") (pRes) (prgbfore 110 50 50) (format t "~a" command) (pres) (newLine))
+(defun notImplemented (command) (pcol 5) (prgbfore 110 50 50) (format t "TODO : command > ") (pRes) (prgbfore 110 50 50) (format t "~a" command) (format t " not implemented yet > ") (pres) (newLine))
+(defun notImplementedFunction (function) (pcol 5) (prgbfore 110 50 50) (format t "TODO : function > ") (pRes) (prgbfore 110 50 50) (format t "~a" function) (format t " not implemented yet") (pres) (newLine))
 
 ;; Affiche l'aide de l'application
 (defun help (&optional command)
@@ -25,7 +29,7 @@
             (format t "- ") (pCol 3) (pRGBFore 150 0 200) (format t "find ") (pRes) (prgbfore 150 0 200) (format t ": permet de rechercher quelque chose") (pres) (newLine)
         )
         (
-            (notImplemented (concat 'string "help " command))
+            (notImplementedFunction (concat 'string "help <" command ">"))
         )
     )
 )
@@ -52,7 +56,7 @@
         )
     )
 )
-(defun afficherPokemon (pokemon) (notImplemented "afficherPokemon"))
+(defun afficherPokemon (pokemon) (notImplementedFunction "afficherPokemon"))
 
 ;; Fonction de test pour tous types d'essais pour l'interface utilisateur
 (defun testUI ()
