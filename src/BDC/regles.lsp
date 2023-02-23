@@ -63,18 +63,48 @@
                         (faits:init-pokemon (faits:get-pokemon-list-of-type-url (faits:getJson weak-type :url)))
                     )
                 )
-                (print "Pas le bon prédicat")
-
+                (progn
+                    (print "Pokemon of opposite type : Defense")
+                    (dolist (resis-type (faits:typePokemon-resistance (faits:predicat-value (faits:get-predicat "typePokemon" predicats))))
+                        (faits:init-pokemon (faits:get-pokemon-list-of-type-url (faits:getJson resis-type :url)))
+                    )
+                    (dolist (immun-type (faits:typePokemon-immunity (faits:predicat-value (faits:get-predicat "typePokemon" predicats))))
+                        (faits:init-pokemon (faits:get-pokemon-list-of-type-url (faits:getJson immun-type :url)))
+                    )
+                )
             )
         )
     )
 )
 
-(funcall (rule-actions pokemon-of-opposite-type) faits:*predicats* faits:*facts*)
-(print faits:*facts*)
+(defvar find-pokemon-name
+    (make-rule 
+        :name 'pokemon-of-opposite-type 
+        :weight 2 
+        :conditions (lambda (predicats faits)
+            (if (faits:get-predicat "nomPokemon" predicats)
+                (progn 
+                    (print "Find pokemon name Ok")
+                    T
+                )
+                nil   
+            )
+        ) 
+        :actions (lambda (predicats faits)
+            (let ((currentPokemon (faits:get-API-pokemon (faits:predicat-value (faits:get-predicat "nomPokemon" predicats)))))
+                (if (not (equal currentPokemon nil)) 
+                    (faits:add-predicat (faits:make-predicat :name "typePokemon" :value (faits:find-type-of-pokemon (faits:getJson currentPokemon :types) faits:*types*)))
+                    (print "Pokemon not found")
+                )
+            )
+        )
+    )
+)
+
+; (funcall (rule-actions pokemon-of-opposite-type) faits:*predicats* faits:*facts*)
 
 ; Liste des règles
-(defparameter *rules* (list pokemon-of-opposite-type))
+(defparameter *rules* (list pokemon-of-opposite-type find-pokemon-name))
 
 (defun test ()
     (format t "test from regles~%")
