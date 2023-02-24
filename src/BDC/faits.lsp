@@ -4,11 +4,11 @@
     #:faits 
     #:test 
     #:*facts* #:add-fact
-    #:*types* #:find-type-of-pokemon
+    #:*types* #:find-type-of-pokemon #:valid-type-of-pokemon
     #:*predicats* #:get-predicat #:add-predicat 
     #:predicat #:make-predicat #:predicat-value 
-    #:pokemon #:make-pokemon 
-    #:typePokemon-weakness #:typePokemon-resistance #:typePokemon-immunity 
+    #:pokemon #:make-pokemon #:pokemon-name #:pokemon-typesPoke #:pokemon-stats #:pokemon-level
+    #:typePokemon #:typePokemon-frenchName #:typePokemon-weakness #:typePokemon-resistance #:typePokemon-immunity 
     #:getJson #:get-pokemon-list-of-type-url #:get-API-pokemon
     #:init-pokemon #:init-type)
 )
@@ -133,6 +133,18 @@
 
 (defvar res nil)
 
+(defun valid-type-of-pokemon (type liste)
+  (setq res nil)
+  (dolist (typeLocal liste)
+    (if (equal (string-downcase (typePokemon-englishName typeLocal)) (string-downcase type))
+      (progn
+        (push typeLocal res)
+      )
+    )
+  )
+  (return-from valid-type-of-pokemon res)
+)
+
 (defun find-type-of-pokemon (json-types liste)
   (setq res nil)
   (dolist (type json-types)
@@ -238,7 +250,7 @@
 (defun add-predicat (predicat)
   (push predicat *predicats*)
 )
-(add-predicat (make-predicat :name "nomPokemon" :value "pidgey"))
+; (add-predicat (make-predicat :name "nomPokemon" :value "pidgey"))
 
 (defun get-predicat (predicatName liste)
   (cond 

@@ -1,5 +1,4 @@
-; (load "src/BDC/faits.lsp")
-
+; (load "src/UI/ui.lsp")
 (defpackage #:regles
     (:use #:cl)
     (:export #:regles #:test #:rule #:*rules* #:make-rule #:rule-conditions #:rule-weight #:rule-name #:rule-actions)
@@ -47,7 +46,7 @@
             (if (faits:get-predicat "typePokemon" predicats)
                 (if (faits:get-predicat "typeRecherche" predicats)
                     (progn 
-                        (print "Pokemon of opposite type Ok")
+                        ; (print "Pokemon of opposite type Ok")
                         T
                     )
                     nil   
@@ -56,7 +55,7 @@
             )
         ) 
         :actions (lambda (predicats faits)
-            (print "Pokemon of opposite type : Start")
+            (format t "Pokemon of opposite type : Start~%")
             (if (equal (faits:predicat-value (faits:get-predicat "typeRecherche" predicats)) "Attaque")
                 (progn
                     (format t "Pokemon of opposite type : Attaque~%")
@@ -85,7 +84,7 @@
         :conditions (lambda (predicats faits)
             (if (faits:get-predicat "nomPokemon" predicats)
                 (progn 
-                    (print "Find pokemon name Ok")
+                    ; (print "Find pokemon name Ok")
                     T
                 )
                 nil   
@@ -102,10 +101,33 @@
     )
 )
 
+(defvar no-posture-set
+    (make-rule 
+        :name 'no-posture-set
+        :weight 1 
+        :conditions (lambda (predicats faits)
+            (if (faits:get-predicat "typePokemon" predicats)
+                (if (not (faits:get-predicat "typeRecherche" predicats))
+                    (progn 
+                        ; (print "No posture set Ok")
+                        T
+                    )
+                    nil   
+                )
+                nil
+            )
+        ) 
+        :actions (lambda (predicats faits)
+            ; (ui:warningRun "regles.no-posture-set" "Veillez choisir une posture (Attaque/Defense)")
+            (format t "Veillez choisir une posture (Attaque/Defense)~%")
+        )
+    )
+)
+
 ; (funcall (rule-actions pokemon-of-opposite-type) faits:*predicats* faits:*facts*)
 
 ; Liste des règles
-(defparameter *rules* (list pokemon-of-opposite-type find-pokemon-name))
+(defparameter *rules* (list pokemon-of-opposite-type find-pokemon-name no-posture-set))
 
 (defun test ()
     (format t "test from regles~%")
