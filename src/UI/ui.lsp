@@ -238,8 +238,8 @@
     ; (format t "~%Lancement du moteur~%")
     (afficherPokemon faits:*facts*)
 
-    (print faits:*predicats*)
-    (print (length faits:*predicats*))
+    ; (print faits:*predicats*)
+    ; (print (length faits:*predicats*))
     ; (moteur:moteurRun)
     ; (faits:add-predicat (faits:make-predicat :name "typeRecherche" :value "Attaque"))
     ; (print faits:*predicats*)
