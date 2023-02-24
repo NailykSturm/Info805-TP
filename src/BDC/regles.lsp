@@ -11,7 +11,8 @@
   name
   weight
   conditions
-  actions)
+  actions
+)
 
 ; Exemple d'initialisation d'une règle (sans conditions)
 ; (defvar pokemon-stronger-than 
@@ -84,7 +85,6 @@
         :conditions (lambda (predicats faits)
             (if (faits:get-predicat "nomPokemon" predicats)
                 (progn 
-                    ; (print "Find pokemon name Ok")
                     T
                 )
                 nil   
@@ -93,7 +93,8 @@
         :actions (lambda (predicats faits)
             (let ((currentPokemon (faits:get-API-pokemon (faits:predicat-value (faits:get-predicat "nomPokemon" predicats)))))
                 (if (not (equal currentPokemon nil)) 
-                    (faits:add-predicat (faits:make-predicat :name "typePokemon" :value (faits:find-type-of-pokemon (faits:getJson currentPokemon :types) faits:*types*)))
+                    (faits:add-predicat (faits:make-predicat :name "typePokemon" 
+                        :value (faits:find-type-of-pokemon (faits:getJson currentPokemon :types) faits:*types*)))
                     (print "Pokemon not found")
                 )
             )
@@ -127,7 +128,10 @@
 ; (funcall (rule-actions pokemon-of-opposite-type) faits:*predicats* faits:*facts*)
 
 ; Liste des règles
-(defparameter *rules* (list pokemon-of-opposite-type find-pokemon-name no-posture-set))
+(defparameter *rules* (list 
+    pokemon-of-opposite-type 
+    find-pokemon-name 
+    no-posture-set))
 
 (defun test ()
     (format t "test from regles~%")
