@@ -65,10 +65,10 @@
                 )
                 (progn
                     (format t "Pokemon of opposite type : Defense~%")
-                    (dolist (resis-type (faits:typePokemon-resistance (faits:predicat-value (faits:get-predicat "typePokemon" predicats))))
+                    (dolist (resis-type (faits:typePokemon-resistance (car (faits:predicat-value (faits:get-predicat "typePokemon" predicats)))))
                         (faits:init-pokemon (faits:get-pokemon-list-of-type-url (faits:getJson resis-type :url)))
                     )
-                    (dolist (immun-type (faits:typePokemon-immunity (faits:predicat-value (faits:get-predicat "typePokemon" predicats))))
+                    (dolist (immun-type (faits:typePokemon-immunity (car (faits:predicat-value (faits:get-predicat "typePokemon" predicats)))))
                         (faits:init-pokemon (faits:get-pokemon-list-of-type-url (faits:getJson immun-type :url)))
                     )
                 )
